@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import { tryCatch } from "../../utils/decorators";
+import { LogArgs, TryCatch, tryCatch } from "../../utils/decorators";
 import { AppRedisClient } from "../services/redis.service";
 import { User, UserServiceT } from "./users";
 
@@ -13,21 +13,25 @@ export class SocketController {
         private userService: UserServiceT
     ){}
 
-    message = (msg:any) => {
+    @TryCatch
+    public message(msg:any){
         console.log({msg})
     }
 
-    connect = (client:socketClient) => {
+    @TryCatch
+    public connect(client:socketClient){
         console.log(`[ Cliente ${client.id} se conectou ]`)
     }
 
-    disconnect = (client:socketClient) => {
+    @TryCatch
+    public disconnect(client:socketClient){
         console.log(`[ Cliente ${client.id} se desconectou ]`)
         this.userService.remove(client.id)
         client.disconnect()
     }
 
-    register = async ([args]:any, client:socketClient) => {
+    @TryCatch
+    public async register([args]:any, client:socketClient){
         let user:User = {
             userName: args.userName,
             socket: client ,
@@ -38,12 +42,14 @@ export class SocketController {
         client.emit("register-response", {address: user.address, nickname: user.userName})
     }
 
-    getUsersConnected = (client:socketClient) => {
+    @TryCatch
+    public getUsersConnected(client:socketClient){
         const users = [...this.userService.users.values()].map(({socket,...rest}) => ({...rest}));
         client.emit("get-users-connected-response", JSON.stringify({users}));
     }
 
-    getMyInfo = (client:socketClient) => {
+    @TryCatch
+    public getMyInfo(client:socketClient){
         const info = this.userService.users.get(client.id);
         if(!info) {
             return client.emit("get-my-info-response", {message: "Not found", statusCode: 400})
@@ -53,5 +59,3 @@ export class SocketController {
     }
 
 }
-
-SocketController.prototype.register = tryCatch(SocketController.prototype.register);

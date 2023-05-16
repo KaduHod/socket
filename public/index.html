@@ -8,9 +8,24 @@
 </head>
 <body>
     <div>
-        <input type="text" id="login-input" placeholder="Digite se nome de usuario"><button id="login-botao">login</button>
+        <input type="text" id="register-input" placeholder="Digite se nome de usuario">
+        <button disabled id="register-&-button">Register & connect</button>
     </div>
-    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
-    <script src="/js/socket.js" ></script>
+
+    <div>
+        <button disabled id="show-users-connected-button">Show users connected</button>
+    </div>
+
+    <div>
+        <button disabled id="my-info-button">My info</button>
+    </div>
+
+    <div>
+        <button disabled id="disconnect-button">Disconnect</button>
+    </div>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script src="/js/decorators.js" type="module"></script>
+    <script src="/js/socketController.js" type="module"></script>
+    <script src="/js/socket.js" type="module"></script>
 </body>
 </html>

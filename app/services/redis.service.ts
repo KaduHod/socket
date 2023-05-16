@@ -1,10 +1,9 @@
 
 import { createClient } from "redis";
-import * as dotenv from 'dotenv';
+import ENV from "../config/env";
 import {APP} from '../config/app.config'
-dotenv.config()
 
-const {REDIS_HOST, REDIS_PORT} = process.env
+const {REDIS_HOST, REDIS_PORT} = ENV
 
 export type AppRedisClient = {
     set: (key: any, value: any) => Promise<string | Buffer | null>;

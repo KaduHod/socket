@@ -5,12 +5,16 @@ export const buttons = {
     registerButton : document.getElementById("register-&-button"),
     getUsersConnectedButton : document.getElementById("show-users-connected-button"),
     disconnectButton : document.getElementById("disconnect-button"),
-    myInfoButton: document.getElementById("my-info-button")
+    myInfoButton: document.getElementById("my-info-button"),
+    buttonEnviarMensagem: document.getElementById("chat-enviar-mensagem")
 };
 
-export const listDiv = document.getElementById("list-users-container")
+console.log({buttons})
 
-export const listOfUsers = document.getElementById("users-connected")
+export const listDiv = document.getElementById("list-users-container");
+export const listOfUsers = document.getElementById("users-connected");
+export const newMessageInput = document.getElementById("new-message-chat");
+export const chatBox = document.getElementById("chat-messages")
 
 export let users = [];
 

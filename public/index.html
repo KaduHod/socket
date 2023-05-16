@@ -6,34 +6,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         .hidden{
             display: none;
+        }
+        .chat-box-messages {
+            width: 100%;
+            min-height: 500px;
+            border: 1px solid red;
+        }
+        .chat-box-buttons {
+            width: 100%;
+            min-height: 20px;
+            border: 1px solid rgb(94, 255, 0);
+        }
+        #chat-container {
+            width: 95%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        body{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header{
+            padding: 20px;
+            display: flex;
+            width: 100%;
+            justify-content: flex-end;
+        }
+        header * {
+            margin-left: 10px;
+        }
+        header:last-child {
+            
+        }
+        .aligned-left {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        #list-users-container {
+            width: 100%;
+        }
+        #users-connected {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        #new-message-chat {
+            flex: 4;
+            display: flex;
+            padding: 5px;
+        }
+        #chat-enviar-mensagem {
+            flex:1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #chat-box-buttons {
+            width: 100%;
+            display: flex;
         }
     </style>
 </head>
 <body>
-    <div>
-        <input type="text" id="register-input" placeholder="Digite se nome de usuario">
-        <button disabled id="register-&-button">Register & connect</button>
-    </div>
-
-    <div>
-        <button disabled id="show-users-connected-button">Show users connected</button>
-    </div>
-
-    <div>
-        <button disabled id="my-info-button">My info</button>
-    </div>
-
-    <div>
-        <button disabled id="disconnect-button">Disconnect</button>
-    </div>
+    <header>
+        <div>
+            <input type="text" id="register-input" placeholder="Digite se nome de usuario">
+            <button disabled id="register-&-button">Register & connect</button>
+        </div>
+    
+        <div class="hidden">
+            <button disabled id="show-users-connected-button">Show users connected</button>
+        </div>
+    
+        <div>
+            <button disabled id="my-info-button">My info</button>
+        </div>
+    
+        <div>
+            <button disabled id="disconnect-button">Disconnect</button>
+        </div>
+    </header>
+    
 
     <div id="list-users-container" class="hidden">
-        <h1>Users connected</h1>
-        <ul id="users-connected">
+        <div class="">
+            <h1>Users connected</h1>
+            <ul id="users-connected">
+            </ul>
+        </div>
+    </div>
+    <div id="chat-container">
+        <h1>Chat - teams pra quê?!?!</h1>
+        <ul id="chat-messages" class="chat-box-messages">
 
         </ul>
+        <div id="chat-box-buttons">
+            <input type="text" name="" id="new-message-chat"> 
+            <button id="chat-enviar-mensagem">Enviar</button>
+        </div>
     </div>
     <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
     <script src="/js/decorators.js" type="module"></script>

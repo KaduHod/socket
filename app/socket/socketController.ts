@@ -1,8 +1,9 @@
 import { Server, Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import { LogArgs, TryCatch, tryCatch } from "../../utils/decorators";
+import { TryCatch } from "../../utils/decorators";
 import { AppRedisClient } from "../services/redis.service";
 import { User, UserServiceT } from "./users";
+import { ChatMessage, chatMessages } from "./chat";
 
 export type BroadcastMessage = {
     type: "login" | "logout" | "message",
@@ -88,6 +89,25 @@ export class SocketController {
     public updateUsersListClient() {
         const users = [...this.userService.users.values()].map(u => ({userName : u.userName, id: u.socket.id}));
         this.io.emit("update-users-list", {users})
+    }
+
+    @TryCatch
+    public newChatMessage(client: socketClient, message: string) {
+        console.log({message})
+        const user = this.userService.users.get(client.id)
+        if(!user) {
+            return this.io.to(client.id).emit("notify", {message:"Not found user!"});
+        }
+        const msg:ChatMessage = {
+            user: {
+                userName: user.userName,
+                address: user.address
+            },
+            message,
+            socketId: client.id
+        }
+        chatMessages.push(msg)
+        this.io.emit("update-messages-list", {chatMessages})
     }
 
 }

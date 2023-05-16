@@ -1,12 +1,12 @@
 import { tryCatch } from "./decorators.js";
 const input = document.getElementById("register-input");
-import { users } from "./main.js";
+import { users, newMessageInput, chatBox } from "./main.js";
 import { toogleListBisibility, styleDisconnected } from "./style.js";
 
 export const ClientSocketController = class {
     constructor(socket) {
         this.socket = socket
-        this.user = null;
+        this.users = null;
     }
 
     connect = () => {
@@ -46,6 +46,20 @@ export const ClientSocketController = class {
         this.socket.emit("get-users-connected", {})
     }
 
+    sendNewMessage = (message) => {
+        this.socket.emit("new-message-chat", {message})
+        console.log({message})
+    }
+
+    updateChatMessages = (chatMessages) => {
+        chatBox.innerHTML = "";
+        chatMessages.forEach((item, index) => {
+            const li = document.createElement("li");
+            li.id = `item-${index}`;
+            li.innerText = item.message
+            chatBox.appendChild(li)
+        })
+    }   
 }
 
 ClientSocketController.prototype.connect = tryCatch(ClientSocketController.prototype.connect)

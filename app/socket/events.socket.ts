@@ -13,5 +13,8 @@ export const SocketHandler = (
         client.on("register", (...args) => sockerController.register(args, client)) 
         client.on("get-users-connected", () => sockerController.getUsersConnected(client)) 
         client.on("get-my-info", () => sockerController.getMyInfo(client)) 
+        client.on("new-message-chat", ({message}) => {
+            sockerController.newChatMessage(client, message)
+        }) 
     })
 }

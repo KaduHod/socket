@@ -1,5 +1,7 @@
 import { tryCatch } from "./decorators.js";
 const input = document.getElementById("register-input");
+import { users } from "./main.js";
+import { toogleListBisibility, styleDisconnected } from "./style.js";
 
 export const ClientSocketController = class {
     constructor(socket) {
@@ -22,14 +24,22 @@ export const ClientSocketController = class {
     onMessage = (...args) => {
         console.log("On message", ...args)
     }
-    onRegisterResponse = (user) => {
-        this.user = user
-        this.socket.user = user
+
+    onRegisterResponse = (args) => {
+        this.logged = !!args.userName;
+        if(!this.logged) {
+            styleDisconnected();
+            toogleListBisibility(true)
+        }
     }
 
     emitRegister = (event) => {
         if(!input.value) return;
+        if(users.find( v => v === input.value)) {
+            alert("Username not available!")
+        }
         this.socket.emit('register', {userName: input.value})
+        toogleListBisibility(false)
     }
 
     getUsersConnected = () => {

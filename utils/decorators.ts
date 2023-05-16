@@ -17,7 +17,7 @@ export let logArgs = (fn:defaultFunction) => {
     }
 }
 
-export function TryCatch(target:any, method: string, descriptor: PropertyDescriptor) {
+export function TryCatch(_:any, __: string, descriptor: PropertyDescriptor) {
     return {
         ...descriptor,
         value: function (...args:any[]){
@@ -30,7 +30,7 @@ export function TryCatch(target:any, method: string, descriptor: PropertyDescrip
     }
 }
 
-export function LogArgs(target:any, method: string, descriptor: PropertyDescriptor) {
+export function LogArgs(target:any, _: string, descriptor: PropertyDescriptor) {
     return {
         ...descriptor,
         value: function(...args:any[]) {

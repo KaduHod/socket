@@ -4,6 +4,12 @@ import { LogArgs, TryCatch, tryCatch } from "../../utils/decorators";
 import { AppRedisClient } from "../services/redis.service";
 import { User, UserServiceT } from "./users";
 
+export type BroadcastMessage = {
+    type: "login" | "logout" | "message",
+    info: {[key:string]:any} | string,
+    userName?: string
+}
+
 export type socketClient = Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
 
 export class SocketController {
@@ -24,22 +30,42 @@ export class SocketController {
     }
 
     @TryCatch
-    public disconnect(client:socketClient){
-        console.log(`[ Cliente ${client.id} se desconectou ]`)
-        this.userService.remove(client.id)
-        client.disconnect()
+    public notifyAllUsers(client:socketClient, event: string, message: BroadcastMessage) {
+        client.broadcast.emit(event, JSON.stringify(message))
     }
 
     @TryCatch
-    public async register([args]:any, client:socketClient){
+    public disconnect(client:socketClient){
+        console.log(`[ Cliente ${client.id} se desconectou ]`)
+        let user = this.userService.users.get(client.id)
+        const message: BroadcastMessage = {
+            type: "logout",
+            info: `${user?.userName ?? client.id} has left!`
+        }
+        if(!user) {
+            return this.notifyAllUsers(client, 'notify', message)
+        }
+
+        this.userService.remove(client.id)
+        client.disconnect()
+        this.updateUsersListClient()
+    }
+
+    @TryCatch
+    public register([args]:any, client:socketClient){
         let user:User = {
             userName: args.userName,
             socket: client ,
             address: client.handshake.address
         }
+        const alreadyRegisteredUserName = [...this.userService.users.values()].find((u) => u.userName === user.userName)
+        if(alreadyRegisteredUserName) {
+            return this.io.to(client.id).emit("register-response", {message: "Username already in use", logged: false})
+        }
         this.userService.register(user, client.id)
         
-        client.emit("register-response", {address: user.address, nickname: user.userName})
+        client.emit("register-response", {userName: user.userName})
+        this.updateUsersListClient()
     }
 
     @TryCatch
@@ -56,6 +82,12 @@ export class SocketController {
         }
         const {userName, address} = info
         client.emit("get-my-info-response", {userName, address});
+    }
+
+    @TryCatch
+    public updateUsersListClient() {
+        const users = [...this.userService.users.values()].map(u => ({userName : u.userName, id: u.socket.id}));
+        this.io.emit("update-users-list", {users})
     }
 
 }

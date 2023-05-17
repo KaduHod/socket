@@ -1,7 +1,7 @@
 import { tryCatch } from "./decorators.js";
 const input = document.getElementById("register-input");
-import { users, newMessageInput, chatBox } from "./main.js";
-import { toogleListBisibility, styleDisconnected } from "./style.js";
+import { users, newMessageInput, chatBox, chat } from "./main.js";
+import { toogleListVisibility, styleDisconnected, styleConnected } from "./style.js";
 
 export const ClientSocketController = class {
     constructor(socket) {
@@ -29,7 +29,7 @@ export const ClientSocketController = class {
         this.logged = !!args.userName;
         if(!this.logged) {
             styleDisconnected();
-            toogleListBisibility(true)
+            toogleListVisibility(true)
         }
     }
 
@@ -39,7 +39,11 @@ export const ClientSocketController = class {
             alert("Username not available!")
         }
         this.socket.emit('register', {userName: input.value})
-        toogleListBisibility(false)
+        toogleListVisibility(false)
+    }
+
+    register = () => {
+
     }
 
     getUsersConnected = () => {
@@ -48,7 +52,6 @@ export const ClientSocketController = class {
 
     sendNewMessage = (message) => {
         this.socket.emit("new-message-chat", {message})
-        console.log({message})
     }
 
     updateChatMessages = (chatMessages) => {
@@ -73,5 +76,51 @@ export const SocketFactory = socket => {
 }
 
 
+export function ClientSocketControlerV2(socket){
+    this.socket = socket;
 
+    this.register = () => {
+        if(!input.value) return;
+        if(users.find( v => v === input.value)) {
+            alert("Username not available!")
+        }
+        this.socket.emit('register/v1', {userName: input.value})
+    }
+        
+    this.disconnect = () => {
+        this.socket.disconnect()
+        users = [];
+        styleDisconnected()
+        toogleListVisibility(true)
+    }
 
+    this.registerResponse = (data) => {
+        if(data.logged) {
+            styleConnected();
+            toogleListVisibility(false);
+            return;
+        }
+        alert(data.error.message);
+    }
+
+    this.updateUsersList = (data) => {
+        users = [...data.users]
+        console.log("Updated users", {users})
+        //disparar funcao para modificar UI
+    }
+
+    this.updateMessagesList = (data) => {
+        chat = [...data.chat]
+        console.log("Updated chat", {chat})
+        //disparar funcao para modificar UI
+    }
+
+    this.register = tryCatch(this.register);
+    this.disconnect = tryCatch(this.disconnect);
+    this.registerResponse = tryCatch(this.registerResponse);
+    this.updateUsersList = tryCatch(this.updateUsersList);
+    this.updateMessagesList = tryCatch(this.updateMessagesList);
+    this.socket.on("register-response", this.registerResponse);
+    this.socket.on("update-users-list", this.updateUsersList);
+    this.socket.on("update-messages-list", this.updateMessagesList);
+}

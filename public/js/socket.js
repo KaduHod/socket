@@ -1,12 +1,16 @@
 import { tryCatch } from "/js/decorators.js";
 import { SocketFactory } from "./socketController.js";
 import { buttons, newMessageInput } from './main.js'
-import { styleDisconnected, toogleListBisibility, updateListOfusers } from './style.js'
+import { styleDisconnected, toogleListVisibility, updateListOfusers } from './style.js'
 import { users } from './main.js'
 
 let socketEventsHandler = async (socket) => {
     const socketController = SocketFactory(socket);
     socketController.emitRegister();
+
+    socket.on("register/v1",  () => {})
+
+
     socket.on("message", socketController.onMessage);
     socket.on("register-response", socketController.onRegisterResponse);
     socket.on("disconnect", (reason) => console.log("Disconected", {reason}));

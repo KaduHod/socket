@@ -1,4 +1,4 @@
-import { socketEventsHandler } from "./socket.js";
+import { socketEventsHandler, ClientSocketControllerV2 } from "./socket.js";
 import { styleConnected } from "./style.js";
 
 export const buttons = {
@@ -17,6 +17,7 @@ export const newMessageInput = document.getElementById("new-message-chat");
 export const chatBox = document.getElementById("chat-messages")
 
 export let users = [];
+export let messagesList = [];
 
 let socket;
 

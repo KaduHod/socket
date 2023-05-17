@@ -10,7 +10,7 @@ export const styleConnected = () => {
     buttons.registerButton.disabled = true;
 }
 
-export const toogleListBisibility = (hide) => {
+export const toogleListVisibility = (hide) => {
     hide
     ? listDiv.classList.add("hidden") 
     : listDiv.classList.remove("hidden")
